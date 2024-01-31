@@ -23,8 +23,12 @@ class MasterAdmin:
     #Increments the id of MasterAdmin
     def autoIncr(self):
         sql='select max(id) from master_admin;'
-        cursor.execute(sql)
-        max=cursor.fetchall()
+        try:
+            cursor.execute(sql)
+            max=cursor.fetchall()
+        except Exception as e:
+            print(e)
+
         if(max[0][0]==None):
             self.id=1
         else:
@@ -65,11 +69,6 @@ class MasterAdmin:
             con.commit()
         except Exception as e:
             print(e)
-
-        if(cursor.rowcount):
-            print(f'{cursor.rowcount} rows affected')
-        else:
-            print('Data not inserted')
     
     #Reads the data from DB
     def viewProfile(self,id):

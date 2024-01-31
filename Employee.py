@@ -1,4 +1,3 @@
-import mysql.connector
 from Connection import Connection
 from datetime import datetime
 import maskpass
@@ -12,6 +11,7 @@ cursor=con.cursor()
 class InvalidGenderException(Exception):
     pass
 
+#Employee
 class Employee:
     act_no=int()
     id=int()
@@ -22,67 +22,35 @@ class Employee:
     balance=int()
     isAdmin=bool()
         
-
+    #Increments id of Employee
     def autoIncr(self):
         sql='select max(id) from accounts;'
-        cursor.execute(sql)
-        max=cursor.fetchall()
+
+        try:
+            cursor.execute(sql)
+            max=cursor.fetchall()
+        except Exception as e:
+            print(e)
+        
         if(max[0][0]==None):
             self.id=1000
         else:
             self.id=max[0][0]+1
-
-
-    def inputAdmin(self):
-        self.act_no=str(uuid.uuid4().int)[:10]
-        Employee.autoIncr(self)
-        self.name=input('Enter employee name:')
-        while True:
-            try:
-                self.gender=input('Enter your gender(M/F):')
-                if self.gender not in ('M','F'):
-                    raise InvalidGenderException('You can only enter M/F')
-                else:
-                    break
-            except InvalidGenderException as e:
-                print(e)
-        while True:
-            try:
-                self.dob=datetime.strptime(input('Enter your dob(dd-mm-yyyy):'),'%d-%m-%Y').date()
-            except Exception as e:
-                print(e)
-            else:
-                break
-        self.password=maskpass.askpass('Enter password:')
-        self.balance=input('Enter intial balance:')
-        self.isAdmin=True
-
-    def insertAdmin(self):
-        sql='insert into accounts(act_no,id,emp_name,gender,dob,pass,balance,isAdmin) values(%s,%s,%s,%s,%s,%s,%s,%s)'
-        val=(self.act_no,self.id,self.name,self.gender,self.dob,self.password,self.balance,self.isAdmin)
-        cursor.execute(sql,val)
-        con.commit()
-
-        if(cursor.rowcount>0):
-            print(f'{cursor.rowcount} rows affected.')
-        else:
-            print('Data not inserted')
-
-    def viewAdminProfile(id):
-        sql='select * from accounts where id=%s'
-        val=(id,)
-        cursor.execute(sql,val)
-        info=cursor.fetchall()
-        return list(info[0])
     
-    def viewEmployees():
+    #Fetches all Employees
+    def viewEmployees(self):
         sql='select act_no,id,emp_name,gender,dob,balance,isAdmin from accounts order by id'
-        cursor.execute(sql)
-        info=cursor.fetchall()
+
+        try:
+            cursor.execute(sql)
+            info=cursor.fetchall()
+        except Exception as e:
+            print(e)
 
         return info
     
-    def inputEmployee(self):
+    #Inputs the data of Employee
+    def inputEmployee(self,isAdmin):
         self.act_no=str(uuid.uuid4().int)[:10]
         Employee.autoIncr(self)
         self.name=input('Enter employee name:')
@@ -104,62 +72,58 @@ class Employee:
                 break
         self.password=maskpass.askpass('Enter password:')
         self.balance=input('Enter intial balance:')
-        self.isAdmin=False
+        self.isAdmin=isAdmin
 
-    def insertEmployee(self):
+    #Adds the Employee to DB.
+    def addEmployee(self):
         sql='insert into accounts(act_no,id,emp_name,gender,dob,pass,balance,isAdmin) values(%s,%s,%s,%s,%s,%s,%s,%s)'
         val=(self.act_no,self.id,self.name,self.gender,self.dob,self.password,self.balance,self.isAdmin)
-        cursor.execute(sql,val)
-        con.commit()
 
-        if(cursor.rowcount>0):
-            print(f'{cursor.rowcount} rows affected.')
-        else:
-            print('Data not inserted')
+        try:
+            cursor.execute(sql,val)
+            con.commit()
+        except Exception as e:
+            print(e)
         
-    
+    #Gives profile of Employee.
     def viewProfile(self,id):
         sql='select act_no,id,emp_name,gender,dob,balance,isAdmin from accounts where id=%s'
         val=(id,)
-        cursor.execute(sql,val)
-        info=cursor.fetchall()
+
+        try:
+            cursor.execute(sql,val)
+            info=cursor.fetchall()
+        except Exception as e:
+            print(e)
+
         return list(info[0])
     
+    #Fetches balance of Employee.
     def viewBalance(self,id,password):
         sql='select balance from accounts where id=%s and pass=%s'
         val=(id,password)
-        cursor.execute(sql,val)
-        balance=cursor.fetchall()
+
+        try:
+            cursor.execute(sql,val)
+            balance=cursor.fetchall()
+        except Exception as e:
+            print(e)
+
         return [balance[0][0]]
     
+    #Update balance of Employee.
     def updateBalance(self,act_no,balance):
         sql='update  accounts set balance=%s where act_no=%s'
         val=(balance,act_no)
-        cursor.execute(sql,val)
-        con.commit()
-        if(cursor.rowcount>0):
-            print(f'{cursor.rowcount} balance affected')
-        else:
-            print('No balance updated')
-    
-    def addTransaction(self,id,trans_date,trans_type,dc_amount,balance):
-        trans_id=int(str(uuid.uuid4().int)[:10])
-        sql='insert into transactions values (%s,%s,%s,%s,%s,%s)'
-        val=(trans_id,id,trans_date,trans_type,dc_amount,balance)
-        cursor.execute(sql,val)
-        con.commit()
-        if(cursor.rowcount>0):
-            print(f'{cursor.rowcount} transaction added')
-        else:
-            print('No transaction added')
 
-    def viewTransactionsbyId(id):
-        sql='select * from transactions where emp_id=%s order by trans_date'
-        cursor.execute(sql,(id,))
-        info=cursor.fetchall()
+        try:
+            cursor.execute(sql,val)
+            con.commit()
+        except Exception as e:
+            print(e)
 
-        return info
-    
+
+    #Checks the login credentials
     def checkLogin(self,id,password):
         try:
             cursor.execute('select id,pass from accounts where id=%s and pass=%s',(id,password))
@@ -171,6 +135,22 @@ class Employee:
             return False
         
         return True
+    
+    #Checks if the Employee is Admin or not.
+    def isEmployeeAdmin(self,id,password):
+        try:
+            cursor.execute('select id,pass from accounts where id=%s and pass=%s and isAdmin=1',(id,password))
+            credentials=cursor.fetchall()
+        except Exception as e:
+            print(e)
+        
+        if(len(credentials)==0):
+            return False
+        
+        return True
+    
+
+    
     
     
 
