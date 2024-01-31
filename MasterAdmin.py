@@ -1,6 +1,7 @@
 from Connection import Connection
 from datetime import datetime
 import maskpass
+import bcrypt
 
 #Custom Exception when Gender is invalid
 class InvalidGenderException(Exception):
@@ -36,33 +37,39 @@ class MasterAdmin:
     
     #Takes MasterAdmin data from user
     def fetchMasterAdmin(self):
-        self.ma_name=input('\nEnter name:')
+        choice=input('Warning! You won\'t be able to exit till you add an admin.\nDo you want to continue?(y/n):')
+        if(choice=='y' or choice=='Y'):
+            self.ma_name=input('\nEnter name:')
 
-        while True:
-            try:
-                self.gender=input('Enter gender(M/F):')
-                if self.gender not in ('M','F'):
-                    raise InvalidGenderException('You can only enter M/F')
+            while True:
+                try:
+                    self.gender=input('Enter gender(M/F):')
+                    if self.gender not in ('M','F'):
+                        raise InvalidGenderException('You can only enter M/F')
+                    else:
+                        break
+                except InvalidGenderException as e:
+                    print(e)
+
+            while True:
+                try:
+                    self.dob=datetime.strptime(input('Enter dob(dd-mm-yyyy):'),'%d-%m-%Y').date()
+                except Exception as e:
+                    print(e)
                 else:
                     break
-            except InvalidGenderException as e:
-                print(e)
+        
 
-        while True:
-            try:
-                self.dob=datetime.strptime(input('Enter dob(dd-mm-yyyy):'),'%d-%m-%Y').date()
-            except Exception as e:
-                print(e)
-            else:
-                break
-
-        self.password=maskpass.askpass('Enter password:')
+            self.password=maskpass.askpass('Enter password:')
+        else:
+            pass
     
     #Adds MasterAdmin data to DB
     def addMasterAdmin(self):
+        hashed_password = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
         MasterAdmin.autoIncr(self)
         sql='insert into master_admin values(%s,%s,%s,%s,%s)'
-        val=(self.id,self.ma_name,self.gender,self.dob,self.password)
+        val=(self.id,self.ma_name,self.gender,self.dob,hashed_password)
 
         try:
             cursor.execute(sql,val)

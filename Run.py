@@ -4,7 +4,6 @@ from Employee import Employee
 from Transaction import Transaction
 import maskpass
 from tabulate import tabulate
-from datetime import datetime
 
 con=Connection.getConnection()
 cursor=con.cursor()
@@ -83,7 +82,7 @@ while True:
                                 credentials=cursor.fetchall()
                                 
                                 e=Employee()
-                                if(not e.checkLogin(id,password)):
+                                if(e.checkLogin(id,password)==False):
                                     print('Invalid credentials!')
 
                                     choice=input('\nDo you want to continue?(y/n):')
@@ -167,7 +166,7 @@ while True:
                                 password=maskpass.askpass('Enter password:','*')
                                 
                                 e=Employee()
-                                if(not e.isEmployeeAdmin(id,password)):
+                                if(e.isEmployeeAdmin(id,password)==False):
                                     print('\nInvalid credentials/Not an Admin')
 
                                     choice=input('\nDo you want to continue?(y/n):')
