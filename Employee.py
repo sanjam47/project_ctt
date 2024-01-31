@@ -53,10 +53,11 @@ class Employee:
     def inputEmployee(self,isAdmin):
         self.act_no=str(uuid.uuid4().int)[:10]
         Employee.autoIncr(self)
-        self.name=input('Enter employee name:')
+        choice=input('Warning! You won\'t be able to exit till you add an employee.\nDo you want to continue?(y/n):')
+        self.name=input('\nEnter  name:')
         while True:
             try:
-                self.gender=input('Enter your gender(M/F):')
+                self.gender=input('Enter gender(M/F):')
                 if self.gender not in ('M','F'):
                     raise InvalidGenderException('You can only enter M/F')
                 else:
@@ -65,7 +66,7 @@ class Employee:
                 print(e)
         while True:
             try:
-                self.dob=datetime.strptime(input('Enter your dob(dd-mm-yyyy):'),'%d-%m-%Y').date()
+                self.dob=datetime.strptime(input('Enter dob(dd-mm-yyyy):'),'%d-%m-%Y').date()
             except Exception as e:
                 print(e)
             else:

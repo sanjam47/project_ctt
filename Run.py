@@ -17,7 +17,7 @@ while True:
     if choice=='Y'or choice=='y':
         ma=MasterAdmin()
         if(not ma.isMasterAdmin()):
-            print('Create Master Admin')
+            print('\nCreate Master Admin')
             ma=MasterAdmin()
             ma.fetchMasterAdmin()
             ma.addMasterAdmin()
@@ -26,7 +26,7 @@ while True:
         if(ma.isMasterAdmin()):
             while True:
                 try:
-                    choice=int(input('1.Master Admin\n2.Employee\n3.Admin\n4.Exit\nLogin as:'))
+                    choice=int(input('\n1.Master Admin\n2.Employee\n3.Admin\n4.Exit\nLogin as:'))
                 except Exception as e:
                     print('Invalid choice!')
                 else:
@@ -34,7 +34,7 @@ while True:
                         while True:
                             
                             try:
-                                id=int(input('Enter id:'))
+                                id=int(input('\nEnter id:'))
                             except Exception as e:
                                 print('Id is always Integer!')
                             else:
@@ -42,7 +42,7 @@ while True:
                                     
                                 ma=MasterAdmin()
                                 if(not ma.checkLogin(id,password)):
-                                    print('Invalid credentials!')
+                                    print('\nInvalid credentials!')
 
                                     choice=input('\nDo you want to continue?(y/n):')
                                     if(choice=='Y' or choice=='y'):
@@ -52,7 +52,7 @@ while True:
                                 else:
                                     while True:
                                         try:
-                                            choice=int(input('1.View Profile\n2.Add Admin\n3.Exit\nEnter choice:'))
+                                            choice=int(input('\n1.View Profile\n2.Add Admin\n3.Exit\nEnter choice:'))
                                         except Exception as e:
                                             print('Invalid choice!')
                                         else:
@@ -68,12 +68,12 @@ while True:
                                             elif(choice==3):
                                                 break
                                             else:
-                                                print('Invalid Choice!') 
+                                                print('\nInvalid Choice!') 
                                     break                              
                     elif(choice==2):
                         while True:
                             try:
-                                id=int(input('Enter id:'))
+                                id=int(input('\nEnter id:'))
                             except Exception as e:
                                 print('Id is always Integer!')
                             else:
@@ -85,12 +85,18 @@ while True:
                                 e=Employee()
                                 if(not e.checkLogin(id,password)):
                                     print('Invalid credentials!')
+
+                                    choice=input('\nDo you want to continue?(y/n):')
+                                    if(choice=='Y' or choice=='y'):
+                                        pass
+                                    else:
+                                        break
                                 else:
                                     while True:
                                         try:
-                                            choice=int(input('1.View Profile\n2.View Balance\n3.Transaction\n4.Transaction History\n5.Exit\nEnter choice:'))
+                                            choice=int(input('\n1.View Profile\n2.View Balance\n3.Transaction\n4.Transaction History\n5.Exit\nEnter choice:'))
                                         except Exception as e:
-                                            print('Invalid choice!')
+                                            print('\nInvalid choice!')
                                         else:
                                             if(choice==1):
                                                 e=Employee()
@@ -105,19 +111,19 @@ while True:
                                             elif(choice==3):
                                                 while True:
                                                     try:
-                                                        choice=int(input('1.Send\n2.Recieve\n3.Exit\nEnter Choice:'))
+                                                        choice=int(input('\n1.Send\n2.Recieve\n3.Exit\nEnter Choice:'))
                                                     except Exception as e:
-                                                        print('Invalid choice!')
+                                                        print('\nInvalid choice!')
                                                     else:
                                                         if(choice==1):
                                                             e=Employee()
                                                             balance=int(e.viewBalance(id,password)[0])
                                                             info=list(e.viewProfile(id))
                                                             act_no=info[0]
-                                                            send=int(input('Enter amount:'))
+                                                            send=int(input('\nEnter amount:'))
 
                                                             if(send>balance):
-                                                                print(f'Insufficient Balance!\nYour current_balance is:{balance}')
+                                                                print(f'\nInsufficient Balance!\nYour current_balance is:{balance}')
                                                             else:
                                                                 balance-=send
                                                                 e.updateBalance(act_no,balance)
@@ -130,7 +136,7 @@ while True:
                                                             balance=int(e.viewBalance(id,password)[0])
                                                             info=list(e.viewProfile(id))
                                                             act_no=info[0]
-                                                            recieve=int(input('Enter amount:'))
+                                                            recieve=int(input('\nEnter amount:'))
                                                             balance+=recieve
                                                             e.updateBalance(act_no,balance)
                                                             con.commit()
@@ -149,12 +155,12 @@ while True:
                                             elif(choice==5):
                                                 break
                                             else:
-                                                print('Enter Valid Choice!')
+                                                print('\nEnter Valid Choice!')
                                     break
                     elif(choice==3):
                         while True:
                             try:
-                                id=int(input('Enter id:'))
+                                id=int(input('\nEnter id:'))
                             except Exception as e:
                                 print('Id is always Integer!')
                             else:
@@ -162,13 +168,19 @@ while True:
                                 
                                 e=Employee()
                                 if(not e.isEmployeeAdmin(id,password)):
-                                    print('Invalid credentials/Not an Admin')
+                                    print('\nInvalid credentials/Not an Admin')
+
+                                    choice=input('\nDo you want to continue?(y/n):')
+                                    if(choice=='Y' or choice=='y'):
+                                        pass
+                                    else:
+                                        break
                                 else:
                                     while True:
                                         try:
-                                            choice=int(input('1.View Profile\n2.Employees\n3.Add Employee\n4.Exit\nEnter choice:'))
+                                            choice=int(input('\n1.View Profile\n2.Employees\n3.Add Employee\n4.Exit\nEnter choice:'))
                                         except Exception as e:
-                                            print('Invalid choice!')
+                                            print('\nInvalid choice!')
                                         else:
                                             if(choice==1):
                                                 e=Employee()
@@ -190,7 +202,7 @@ while True:
                     elif(choice==4):
                         break
                     else:
-                        print('Enter valid choice!')
+                        print('\nEnter valid choice!')
 
     elif choice=='N' or choice=='n':
         while True:
@@ -199,6 +211,6 @@ while True:
                 con.close()
                 exit()
             else:
-                print('Invalid Choice')
+                print('\nInvalid Choice')
     else:
-        print('Invalid choice!')
+        print('\nInvalid choice!')

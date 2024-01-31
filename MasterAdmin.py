@@ -36,11 +36,11 @@ class MasterAdmin:
     
     #Takes MasterAdmin data from user
     def fetchMasterAdmin(self):
-        self.ma_name=input('Enter your name:')
+        self.ma_name=input('\nEnter name:')
 
         while True:
             try:
-                self.gender=input('Enter your gender(M/F):')
+                self.gender=input('Enter gender(M/F):')
                 if self.gender not in ('M','F'):
                     raise InvalidGenderException('You can only enter M/F')
                 else:
@@ -50,7 +50,7 @@ class MasterAdmin:
 
         while True:
             try:
-                self.dob=datetime.strptime(input('Enter your dob(dd-mm-yyyy):'),'%d-%m-%Y').date()
+                self.dob=datetime.strptime(input('Enter dob(dd-mm-yyyy):'),'%d-%m-%Y').date()
             except Exception as e:
                 print(e)
             else:
