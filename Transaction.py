@@ -8,7 +8,8 @@ cursor=con.cursor()
 class Transaction:
    
    #Adds Transaction to DB.
-    def addTransaction(self,id,trans_type,dc_amount,balance):
+    @staticmethod
+    def addTransaction(id,trans_type,dc_amount,balance):
         trans_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         trans_id=int(str(uuid.uuid4().int)[:10])
         sql='insert into transactions values (%s,%s,%s,%s,%s,%s)'
@@ -20,7 +21,12 @@ class Transaction:
         except Exception as e:
             print(e)
 
+        if(cursor.rowcount>0):
+            return True
+        return False
+
     #Fetches Transaction on id.
+    @staticmethod
     def viewTransactionsbyId(id):
         sql='select * from transactions where emp_id=%s order by trans_date'
         
@@ -31,3 +37,9 @@ class Transaction:
             print(e)
 
         return info
+    
+     #closes connection at last.
+    @staticmethod
+    def closeConnection():
+        cursor.close()
+        con.close()
